@@ -1,16 +1,13 @@
 import Fastify from "fastify";
+import { healthController } from "./modules/health/health.controller.js";
 
 export function buildApp() {
     const app = Fastify({
         logger: true,
     });
 
-    app.get("/health", async () => {
-        return {
-            status: "ok",
-            message: "Welcome to the Agency Distribution API"
-        };
-    });
+    // Enregistre les routes
+    app.register(healthController);
 
     return app;
 }

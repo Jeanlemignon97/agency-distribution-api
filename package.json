@@ -13,7 +13,9 @@
   "type": "module",
   "description": "B2B travel distribution API simulation for agencies and ticket comparison apps",
   "dependencies": {
-    "fastify": "^5.8.4"
+    "dotenv": "^17.3.1",
+    "fastify": "^5.8.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
