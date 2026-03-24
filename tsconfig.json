@@ -1,0 +1,50 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src", // Specify the root directory of the source files
+    "outDir": "./dist", // Specify the output directory for the compiled files
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "nodenext", // Specify the module system
+    "moduleResolution": "nodenext", // Specify the module resolution strategy
+    "target": "esnext", // Specify the target ECMAScript version
+    "types": [], // Specify the types to include
+    // For nodejs:
+    // "lib": ["esnext"], // Specify the libraries to include
+    // "types": ["node"], // Specify the types to include
+    // and npm install -D @types/node
+
+    // Other Outputs
+    "sourceMap": true, // Enable source map generation
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+    // Recommended Options
+    "strict": true, // Enable all strict type-checking options
+    "jsx": "react-jsx", // Specify JSX code generation
+    "verbatimModuleSyntax": true, // Enable verbatim module syntax
+    "isolatedModules": true, // Enable isolated modules
+    "noUncheckedSideEffectImports": true, // Enable no unchecked side effect imports
+    "moduleDetection": "force", // Enable module detection
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src"],
+  // "exclude": ["node_modules"]
+}
