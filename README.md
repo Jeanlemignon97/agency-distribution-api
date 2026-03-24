@@ -26,3 +26,10 @@ L'objectif est de reproduire une logique proche d'un fournisseur de distribution
 ```bash
 npm install
 npm run dev
+
+## Seed des données de démonstration
+
+Pour remplir la base avec des données de test :
+
+```bash
+npm run seed
