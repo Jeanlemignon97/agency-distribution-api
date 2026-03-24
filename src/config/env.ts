@@ -10,6 +10,7 @@ dotenv.config();
 const envSchema = z.object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"), // convertit la valeur en enum
     PORT: z.coerce.number().int().positive().default(3000), // convertit la valeur en nombre entier positif
+    DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
 });
 
 

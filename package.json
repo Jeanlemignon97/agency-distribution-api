@@ -13,8 +13,10 @@
   "type": "module",
   "description": "B2B travel distribution API simulation for agencies and ticket comparison apps",
   "dependencies": {
+    "@prisma/client": "^6.19.2",
     "dotenv": "^17.3.1",
     "fastify": "^5.8.4",
+    "prisma": "^6.19.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
