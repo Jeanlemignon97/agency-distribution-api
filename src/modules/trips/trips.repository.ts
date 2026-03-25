@@ -85,6 +85,21 @@ export class TripsRepository {
     }
 
     /**
+     * Trouve un voyage par son ID
+     * 
+     * @param id - ID du voyage
+     * @returns Voyage trouvé
+     */
+    async findById(id: string) {
+        return this.prisma.trip.findUnique({
+            where: { id },
+            include: {
+                agency: true,
+            },
+        });
+    }
+
+    /**
      * Crée un nouveau voyage
      * 
      * @param data - Données du voyage à créer
@@ -107,6 +122,18 @@ export class TripsRepository {
             include: {
                 agency: true,
             },
+        });
+    }
+
+    /**
+     * Supprime un voyage par son ID
+     * 
+     * @param id - ID du voyage
+     * @returns Voyage supprimé
+     */
+    async deleteById(id: string) {
+        return this.prisma.trip.delete({
+            where: { id },
         });
     }
 

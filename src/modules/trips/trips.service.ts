@@ -80,4 +80,19 @@ export class TripsService {
             status: createdTrip.status,
         };
     }
+
+    /**
+     * Supprime un voyage par son ID
+     * 
+     * @param id - ID du voyage
+     */
+    async deleteTrip(id: string): Promise<void> {
+        const existingTrip = await this.tripsRepository.findById(id);
+
+        if (!existingTrip) {
+            throw new HttpError(404, 'Trip not found');
+        }
+
+        await this.tripsRepository.deleteById(id);
+    }
 }

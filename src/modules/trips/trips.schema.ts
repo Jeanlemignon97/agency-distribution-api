@@ -15,6 +15,10 @@ export const listTripsQuerySchema = z.object({
 
 /**
  * Schéma de validation pour la création d'un voyage
+ * 
+ * z.string().datetime() Ça force un format ISO valide.
+ * .refine(...) Ça ajoute une règle métier : 
+ * l’arrivée doit être après le départ 
  */
 export const createTripBodySchema = z
     .object({
@@ -34,7 +38,10 @@ export const createTripBodySchema = z
             path: ['arrivalTime'],
         },
     );
-/**z.string().datetime() Ça force un format ISO valide.
- * .refine(...) Ça ajoute une règle métier : 
- * l’arrivée doit être après le départ 
- * */
+
+/**
+ * Schéma de validation pour la suppression d'un voyage
+ */
+export const deleteTripParamsSchema = z.object({
+    id: z.string().trim().min(1, 'Trip id is required'),
+});

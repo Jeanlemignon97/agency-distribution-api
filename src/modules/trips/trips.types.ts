@@ -72,3 +72,9 @@ export type CreatedTrip = {
     availableSeats: number;
     status: string;
 };
+/**
+ * Interface représentant les paramètres de suppression d'un voyage.
+ */
+export type DeleteTripParams = {
+    id: string;
+};

@@ -2,7 +2,7 @@ import { type FastifyInstance, type FastifyReply } from "fastify";
 import { TripsService } from "./trips.service.js";
 import { type ListTripsQuery } from "./trips.types.js";
 import { requireApiKey } from "../../middleware/require-api-key.js";
-import { listTripsQuerySchema, createTripBodySchema } from "./trips.schema.js";
+import { listTripsQuerySchema, createTripBodySchema, deleteTripParamsSchema } from "./trips.schema.js";
 import { HttpError } from "../../shared/errors/http-error.js";
 
 /**
@@ -75,6 +75,48 @@ export async function tripsController(app: FastifyInstance) {
                     message: 'Trip created successfully',
                     data: createdTrip,
                 });
+            } catch (error) {
+                if (error instanceof HttpError) {
+                    return reply.status(error.statusCode).send({
+                        error: 'Request Error',
+                        message: error.message,
+                        statusCode: error.statusCode,
+                    });
+                }
+
+                throw error;
+            }
+        },
+    );
+
+
+    /**
+     * DELETE /api/v1/trips/:id
+     * Supprime un voyage par son ID.
+     * Cette route est protégée par une clé API.
+     */
+    app.delete(
+        '/api/v1/trips/:id',
+        {
+            preHandler: [requireApiKey],
+        },
+        async (request, reply) => {
+            const parsedParams = deleteTripParamsSchema.safeParse(request.params);
+
+            if (!parsedParams.success) {
+                return reply.status(400).send({
+                    error: 'Bad Request',
+                    message: 'Invalid route parameters',
+                    statusCode: 400,
+                    details: parsedParams.error.flatten(),
+                });
+            }
+
+            const tripsService = new TripsService(app.prisma);
+
+            try {
+                await tripsService.deleteTrip(parsedParams.data.id);
+                return reply.status(204).send();
             } catch (error) {
                 if (error instanceof HttpError) {
                     return reply.status(error.statusCode).send({
