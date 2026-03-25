@@ -32,7 +32,29 @@ export class BookingsRepository {
                 throw new Error('TRIP_NOT_BOOKABLE');
             }
 
-            if (trip.availableSeats < data.seatsBooked) {
+            /*if (trip.availableSeats < data.seatsBooked) {
+                throw new Error('INSUFFICIENT_SEATS');
+            }*/
+
+            // On utilise updateMany pour décrémenter le nombre de places disponibles
+            // On vérifie si le nombre de places disponibles est supérieur ou égal au nombre de places réservées
+            // Et on vérifie si le statut du voyage est SCHEDULED
+            const seatUpdateResult = await tx.trip.updateMany({
+                where: {
+                    id: data.tripId,
+                    status: TripStatus.SCHEDULED,
+                    availableSeats: {
+                        gte: data.seatsBooked,
+                    },
+                },
+                data: {
+                    availableSeats: {
+                        decrement: data.seatsBooked,
+                    },
+                },
+            });
+
+            if (seatUpdateResult.count === 0) {
                 throw new Error('INSUFFICIENT_SEATS');
             }
 
@@ -46,14 +68,13 @@ export class BookingsRepository {
                 },
             });
 
-            const updatedTrip = await tx.trip.update({
+            const updatedTrip = await tx.trip.findUnique({
                 where: { id: data.tripId },
-                data: {
-                    availableSeats: {
-                        decrement: data.seatsBooked, // Décrémente le nombre de places disponibles
-                    },
-                },
             });
+
+            if (!updatedTrip) {
+                throw new Error('TRIP_NOT_FOUND_AFTER_UPDATE');
+            }
 
             return {
                 booking,

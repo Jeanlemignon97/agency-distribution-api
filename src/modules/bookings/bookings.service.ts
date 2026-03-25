@@ -31,16 +31,15 @@ export class BookingsService {
             };
         } catch (error) {
             if (error instanceof Error) {
-                if (error.message === 'TRIP_NOT_FOUND') {
-                    throw new HttpError(404, 'Trip not found');
-                }
-
-                if (error.message === 'TRIP_NOT_BOOKABLE') {
-                    throw new HttpError(400, 'Trip is not bookable');
-                }
-
-                if (error.message === 'INSUFFICIENT_SEATS') {
-                    throw new HttpError(409, 'Not enough seats available');
+                switch (error.message) {
+                    case 'TRIP_NOT_FOUND':
+                        throw new HttpError(404, 'Trip not found');
+                    case 'TRIP_NOT_BOOKABLE':
+                        throw new HttpError(400, 'Trip is not bookable');
+                    case 'INSUFFICIENT_SEATS':
+                        throw new HttpError(409, 'Not enough seats available');
+                    case 'TRIP_NOT_FOUND_AFTER_UPDATE':
+                        throw new HttpError(500, 'Trip state became inconsistent after seat update');
                 }
             }
 
