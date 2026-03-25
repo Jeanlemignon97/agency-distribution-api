@@ -9,6 +9,20 @@ type FindManyTripsFilters = {
     departureDate?: string | undefined;
 };
 
+/**
+ * Interface représentant les données nécessaires pour créer un voyage.
+ */
+type CreateTripRepositoryInput = {
+    agencyId: string;
+    origin: string;
+    destination: string;
+    departureTime: Date;
+    arrivalTime: Date;
+    price: number;
+    currency: string;
+    totalSeats: number;
+};
+
 export class TripsRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
@@ -57,6 +71,45 @@ export class TripsRepository {
             },
         });
     }
+
+    /**
+    * Trouve une agence par son ID
+    * 
+    * @param agencyId - ID de l'agence
+    * @returns Agence trouvée
+    */
+    async findAgencyById(agencyId: string) {
+        return this.prisma.agency.findUnique({
+            where: { id: agencyId },
+        });
+    }
+
+    /**
+     * Crée un nouveau voyage
+     * 
+     * @param data - Données du voyage à créer
+     * @returns Voyage créé
+     */
+    async create(data: CreateTripRepositoryInput) {
+        return this.prisma.trip.create({
+            data: {
+                agencyId: data.agencyId,
+                origin: data.origin,
+                destination: data.destination,
+                departureTime: data.departureTime,
+                arrivalTime: data.arrivalTime,
+                price: data.price,
+                currency: data.currency,
+                totalSeats: data.totalSeats,
+                availableSeats: data.totalSeats,
+                status: TripStatus.SCHEDULED,
+            },
+            include: {
+                agency: true,
+            },
+        });
+    }
+
 }
 
 /**

@@ -2,7 +2,8 @@ import { type FastifyInstance, type FastifyReply } from "fastify";
 import { TripsService } from "./trips.service.js";
 import { type ListTripsQuery } from "./trips.types.js";
 import { requireApiKey } from "../../middleware/require-api-key.js";
-import { listTripsQuerySchema } from "./trips.schema.js";
+import { listTripsQuerySchema, createTripBodySchema } from "./trips.schema.js";
+import { HttpError } from "../../shared/errors/http-error.js";
 
 /**
  * Contrôleur pour la gestion des voyages (Trips).
@@ -46,5 +47,45 @@ export async function tripsController(app: FastifyInstance) {
                 },
             };
         }
+    );
+
+    app.post(
+        '/api/v1/trips',
+        {
+            preHandler: [requireApiKey],
+        },
+        async (request, reply) => {
+            const parsedBody = createTripBodySchema.safeParse(request.body);
+
+            if (!parsedBody.success) {
+                return reply.status(400).send({
+                    error: 'Bad Request',
+                    message: 'Invalid request body',
+                    statusCode: 400,
+                    details: parsedBody.error.flatten(),
+                });
+            }
+
+            const tripsService = new TripsService(app.prisma);
+
+            try {
+                const createdTrip = await tripsService.createTrip(parsedBody.data);
+
+                return reply.status(201).send({
+                    message: 'Trip created successfully',
+                    data: createdTrip,
+                });
+            } catch (error) {
+                if (error instanceof HttpError) {
+                    return reply.status(error.statusCode).send({
+                        error: 'Request Error',
+                        message: error.message,
+                        statusCode: error.statusCode,
+                    });
+                }
+
+                throw error;
+            }
+        },
     );
 }

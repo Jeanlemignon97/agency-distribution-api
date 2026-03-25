@@ -9,6 +9,9 @@
  * 
  * @example
  * // Utilisation dans une requête : /trips?origin=Yaounde&destination=Douala
+ * 
+ * l’entrée est ce que le client envoie
+ * la sortie est ce que ton API renvoie
  */
 export type ListTripsQuery = {
     /** Ville de départ (ex: "Yaounde") */
@@ -24,26 +27,48 @@ export type ListTripsQuery = {
  * C'est le format de données renvoyé au client (Data Transfer Object).
  */
 export type TripListItem = {
-    /** Identifiant unique du voyage */
     id: string;
-    /** Identifiant de l'agence de transport */
     agencyId: string;
-    /** Nom de l'agence (ex: "Touristique Express") */
     agencyName: string;
-    /** Ville de départ */
     origin: string;
-    /** Ville d'arrivée */
     destination: string;
-    /** Date et heure de départ (ISO String) */
     departureTime: string;
-    /** Date et heure d'arrivée prévue (ISO String) */
     arrivalTime: string;
-    /** Prix du ticket */
     price: number;
-    /** Devise du prix (par défaut "XAF") */
     currency: string;
-    /** Nombre de places encore disponibles dans le bus */
     availableSeats: number;
-    /** Statut actuel du voyage (SCHEDULED, CANCELLED, COMPLETED) */
+    status: string;
+};
+
+/**
+ * Interface représentant les données nécessaires pour créer un voyage.
+ */
+export type CreateTripInput = {
+    agencyId: string;
+    origin: string;
+    destination: string;
+    departureTime: string;
+    arrivalTime: string;
+    price: number;
+    currency?: string;
+    totalSeats: number;
+};
+
+/**
+ * Interface représentant un voyage créé.
+ * C'est le format de données renvoyé au client après la création d'un voyage.
+ */
+export type CreatedTrip = {
+    id: string;
+    agencyId: string;
+    agencyName: string;
+    origin: string;
+    destination: string;
+    departureTime: string;
+    arrivalTime: string;
+    price: number;
+    currency: string;
+    totalSeats: number;
+    availableSeats: number;
     status: string;
 };

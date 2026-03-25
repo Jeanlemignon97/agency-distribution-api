@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { TripsRepository } from './trips.repository.js';
-import type { ListTripsQuery, TripListItem } from './trips.types.js';
+import type { ListTripsQuery, TripListItem, CreateTripInput, CreatedTrip } from './trips.types.js';
+import { HttpError } from '../../shared/errors/http-error.js';
 
 /**
  * Service pour la gestion des voyages
@@ -34,5 +35,49 @@ export class TripsService {
             availableSeats: trip.availableSeats,
             status: trip.status,
         }));
+    }
+
+    /**
+     * Crée un nouveau voyage
+     * 
+     * @param input - Données du voyage à créer
+     * @returns Voyage créé
+     */
+    async createTrip(input: CreateTripInput): Promise<CreatedTrip> {
+        const agency = await this.tripsRepository.findAgencyById(input.agencyId);
+
+        if (!agency) {
+            throw new HttpError(404, 'Agency not found');
+        }
+
+        if (!agency.isActive) {
+            throw new HttpError(400, 'Agency is inactive');
+        }
+
+        const createdTrip = await this.tripsRepository.create({
+            agencyId: input.agencyId,
+            origin: input.origin,
+            destination: input.destination,
+            departureTime: new Date(input.departureTime),
+            arrivalTime: new Date(input.arrivalTime),
+            price: input.price,
+            currency: input.currency ?? 'XAF',
+            totalSeats: input.totalSeats,
+        });
+
+        return {
+            id: createdTrip.id,
+            agencyId: createdTrip.agencyId,
+            agencyName: createdTrip.agency.name,
+            origin: createdTrip.origin,
+            destination: createdTrip.destination,
+            departureTime: createdTrip.departureTime.toISOString(),
+            arrivalTime: createdTrip.arrivalTime.toISOString(),
+            price: createdTrip.price,
+            currency: createdTrip.currency,
+            totalSeats: createdTrip.totalSeats,
+            availableSeats: createdTrip.availableSeats,
+            status: createdTrip.status,
+        };
     }
 }
