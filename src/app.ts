@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import prismaPlugin from "./plugins/prisma.js";
 import { healthController } from "./modules/health/health.controller.js";
+import { tripsController } from "./modules/trips/trips.controller.js";
 
 
 export function buildApp() {
@@ -13,6 +14,8 @@ export function buildApp() {
 
     // Enregistre les routes
     app.register(healthController);
+
+    app.register(tripsController);
 
     return app;
 }

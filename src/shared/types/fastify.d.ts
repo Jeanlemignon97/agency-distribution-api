@@ -3,7 +3,7 @@
  * Permet d'ajouter des propriétés personnalisées à l'instance Fastify
  */
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, ApiKey } from '@prisma/client';
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -13,4 +13,4 @@ declare module 'fastify' {
     interface FastifyRequest {
         apiKey?: ApiKey;
     }
-}   
+}
