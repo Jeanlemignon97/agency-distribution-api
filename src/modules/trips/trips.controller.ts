@@ -1,6 +1,6 @@
 import { type FastifyInstance, type FastifyReply } from "fastify";
 import { TripsService } from "./trips.service.js";
-import { type ListTripsQuery } from "./trips.types.js";
+import { type ListTripsQuery, type DeleteTripParams } from "./trips.types.js";
 import { requireApiKey } from "../../middleware/require-api-key.js";
 import { listTripsQuerySchema, createTripBodySchema, deleteTripParamsSchema } from "./trips.schema.js";
 import { HttpError } from "../../shared/errors/http-error.js";
@@ -95,39 +95,21 @@ export async function tripsController(app: FastifyInstance) {
      * Supprime un voyage par son ID.
      * Cette route est protégée par une clé API.
      */
-    app.delete(
+    app.delete<{ Params: DeleteTripParams }>(
         '/api/v1/trips/:id',
         {
             preHandler: [requireApiKey],
         },
-        async (request, reply) => {
+        async (request, reply: FastifyReply) => {
             const parsedParams = deleteTripParamsSchema.safeParse(request.params);
 
             if (!parsedParams.success) {
-                return reply.status(400).send({
-                    error: 'Bad Request',
-                    message: 'Invalid route parameters',
-                    statusCode: 400,
-                    details: parsedParams.error.flatten(),
-                });
+                throw new HttpError(400, 'Invalid route parameters');
             }
 
-            const tripsService = new TripsService(app.prisma);
+            await tripsService.deleteTrip(parsedParams.data.id);
 
-            try {
-                await tripsService.deleteTrip(parsedParams.data.id);
-                return reply.status(204).send();
-            } catch (error) {
-                if (error instanceof HttpError) {
-                    return reply.status(error.statusCode).send({
-                        error: 'Request Error',
-                        message: error.message,
-                        statusCode: error.statusCode,
-                    });
-                }
-
-                throw error;
-            }
+            return reply.status(204).send();
         },
     );
 }

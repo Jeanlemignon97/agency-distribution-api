@@ -14,6 +14,8 @@
   "type": "module",
   "description": "B2B travel distribution API simulation for agencies and ticket comparison apps",
   "dependencies": {
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.5",
     "@prisma/client": "^6.19.2",
     "dotenv": "^17.3.1",
     "fastify": "^5.8.4",
