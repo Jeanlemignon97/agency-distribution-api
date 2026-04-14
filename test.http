@@ -1,0 +1,18 @@
+### Récupérer les voyages (Trips)
+GET http://localhost:3000/api/v1/trips
+x-api-key: jt_test_web_partner_key
+
+### créer une réservations (Bookings)
+POST http://localhost:3000/api/v1/bookings
+x-api-key: jt_test_web_partner_key
+Content-Type: application/json
+
+{
+  "tripId": "cmnz7lmtd0004mb3m5t6y3vdz",
+  "customerName": "Dany Boon",
+  "customerPhone": "+237600000000",
+  "seatsBooked": 2
+}
+
+### Santé (sans clé API)
+GET http://localhost:3000/health

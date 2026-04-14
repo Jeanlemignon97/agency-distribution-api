@@ -1,0 +1,45 @@
+services:
+  distribution-api:
+    image: jeanlemignon/distribution:1.0.0
+    container_name: distribution-api
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      - api-network
+    env_file:
+      - .env
+    depends_on:
+      db:
+        # Attend que le healthcheck de la DB soit valide avant de démarrer
+        condition: service_healthy
+
+  db:
+    image: postgres:14.22-alpine3.22
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      # Teste si Postgres est prêt à accepter des connexions sur la base spécifique
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - api-network
+    volumes:
+      # Persistance des données (le dossier db_data survit à l'arrêt du conteneur)
+      - db_data:/var/lib/postgresql/data
+
+networks:
+  api-network:
+    name: api-network
+    # Indique que ce réseau existe déjà sur la machine (créé manuellement ou par un autre projet)
+    external: true
+
+volumes:
+  # Définition du volume nommé pour la base de données
+  db_data:
