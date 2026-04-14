@@ -1,0 +1,29 @@
+
+# Dépendances locales (très important : Docker doit faire son propre npm install)
+node_modules
+npm-debug.log
+
+# Build local (Docker build le projet de son côté)
+dist
+
+# Secrets et configuration locale
+.env
+.env.local
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+compose.yml
+.dockerignore
+
+# Logs et divers
+logs
+*.log
+.DS_Store
+
+# Documentation et tests (inutile pour le serveur)
+README.md
+test.http

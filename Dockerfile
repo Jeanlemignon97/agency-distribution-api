@@ -8,7 +8,7 @@ COPY tsconfig.json ./
 COPY prisma ./prisma
 
 # Installation des dépendances
-RUN apk add --no-cache netcat-openbsd && npm install
+RUN npm install
 
 # Génération prisma
 RUN npx prisma generate
